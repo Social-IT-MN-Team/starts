@@ -1,10 +1,10 @@
-class Component {
+export class Component {
     constructor(options) {
       this.props = options.props || {};
       this.state = options.state || {};
       this.events = {};
       this.container = options.container || null;
-      this.renderedContent = null; // Variable para almacenar el contenido cacheado
+      this.renderedContent = null;
     }
   
     setState(newState) {
@@ -28,7 +28,6 @@ class Component {
       if (this.container) {
         const { state, props } = this;
   
-        // Utilizar el contenido cacheado si está disponible y no se requiere una actualización
         if (this.renderedContent !== null && !this.shouldUpdate(state, props)) {
           this.container.innerHTML = '';
           this.container.appendChild(this.renderedContent);
@@ -38,21 +37,18 @@ class Component {
           const fragment = document.createDocumentFragment();
           fragment.appendChild(content);
   
-          // Clonar el fragmento antes de adjuntarlo al contenedor
           const clonedFragment = fragment.cloneNode(true);
   
-          // Reemplazar el contenido anterior con el nuevo fragmento clonado
           this.container.innerHTML = '';
           this.container.appendChild(clonedFragment);
   
-          // Actualizar el contenido cacheado
           this.renderedContent = clonedFragment;
         }
       }
     }
   
     shouldUpdate(newState, newProps) {
-        // Función auxiliar para comparar objetos de manera profunda
+        // Función para comparar objetos de manera profunda
         const deepCompare = (obj1, obj2) => {
             // Si no son objetos, simplemente compararlos con operador de igualdad
             if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
@@ -86,15 +82,14 @@ class Component {
         };
     
         // Comprobar si tanto el estado como las propiedades han cambiado
-        const stateChanged = !deepCompare(this.state, newState);
         const propsChanged = !deepCompare(this.props, newProps);
+        const stateChanged = !deepCompare(this.state, newState);
     
         // Devolver true si el componente debe actualizarse, o false si el contenido renderizado puede ser reutilizado sin cambios.
-        return stateChanged || propsChanged;
+        return propsChanged || stateChanged;
     }
   
-    // Método a implementar por las clases hijas para generar el contenido del componente
-    // en función del estado (state) y propiedades (props) actuales.
+  
     renderContent(state, props) {
       throw new Error('El método "renderContent" debe ser implementado en las clases hijas.');
     }
